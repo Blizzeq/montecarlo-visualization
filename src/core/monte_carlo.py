@@ -45,7 +45,6 @@ class MonteCarloSimulator:
         distances_squared = x_coords**2 + y_coords**2
         inside_mask = distances_squared <= 1.0
         
-        # Use list comprehension for better performance than explicit loop
         points = [Point(x_coords[i], y_coords[i], inside_mask[i]) for i in range(count)]
         
         return points
@@ -56,7 +55,6 @@ class MonteCarloSimulator:
         new_points = self.generate_batch_points(count)
         self.points.extend(new_points)
         
-        # More efficient counting using NumPy-style approach
         new_inside = sum(p.inside_circle for p in new_points)
         self.points_inside += new_inside
         self.total_points += count
@@ -111,22 +109,3 @@ class MonteCarloSimulator:
         }
 
 
-class IntegratorMonteCarlo:
-    @staticmethod
-    def integrate_function(func, a: float, b: float, n_points: int) -> Tuple[float, List[Tuple[float, float]]]:
-        points = []
-        x_vals = np.random.uniform(a, b, n_points)
-        y_max = max(func(x) for x in np.linspace(a, b, 1000))
-        y_vals = np.random.uniform(0, y_max, n_points)
-        
-        inside_count = 0
-        for i in range(n_points):
-            x, y = x_vals[i], y_vals[i]
-            if y <= func(x):
-                inside_count += 1
-                points.append((x, y, True))
-            else:
-                points.append((x, y, False))
-        
-        area_estimate = (b - a) * y_max * inside_count / n_points
-        return area_estimate, points

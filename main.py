@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Monte Carlo π Visualization
-Interactive visualization of Monte Carlo algorithm for π estimation
-
-Author: Jakub Krasuski  
-Requirements: PySide6, numpy, matplotlib, pyqtgraph
-"""
+"""Monte Carlo π estimation visualization"""
 
 import sys
 import os
@@ -14,7 +7,6 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 from PySide6.QtCore import QDir
 from PySide6.QtGui import QIcon
 
-# Dodaj katalog src do ścieżki
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 try:
@@ -28,15 +20,11 @@ except ImportError as e:
 
 
 def setup_application():
-    """Configure Qt application"""
     app = QApplication(sys.argv)
-    
-    # Application settings
     app.setApplicationName("Monte Carlo π Visualization")
     app.setApplicationVersion("1.0")
     app.setOrganizationName("Monte Carlo Lab")
     
-    # Set global dark theme style
     app.setStyleSheet(f"""
     QApplication {{
         background-color: {Colors.BACKGROUND.name()};
@@ -62,26 +50,13 @@ def setup_application():
 
 
 def main():
-    """Main application function"""
     try:
-        # Create Qt application
         app = setup_application()
-        
-        # Create and show main window
         window = MainWindow()
         window.show()
         
-        # Show application info
-        print("=" * 50)
         print("Monte Carlo π Visualization")
-        print("=" * 50)
-        print("Monte Carlo algorithm for π estimation")
-        print("Use control panel to manage simulation")
         print("Right-click on canvas to toggle grid")
-        print("Check statistics tabs for detailed analysis")
-        print("=" * 50)
-        
-        # Run application loop
         return app.exec()
         
     except Exception as e:

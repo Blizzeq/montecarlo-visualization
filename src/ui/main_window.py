@@ -16,8 +16,8 @@ class MainWindow(QMainWindow):
         self.simulator = MonteCarloSimulator()
         self.simulation_timer = QTimer()
         self.is_running = False
-        self.points_per_batch = 50  # Fixed batch size
-        self.simulation_speed = 100  # ms between batches
+        self.points_per_batch = 42
+        self.simulation_speed = 100
         
         self.setup_ui()
         self.setup_connections()
@@ -36,7 +36,6 @@ class MainWindow(QMainWindow):
         menubar = self.menuBar()
         menubar.setStyleSheet("QMenuBar { color: white; background-color: #2e2e32; }")
         
-        # File menu
         file_menu = menubar.addMenu('File')
         
         quit_action = QAction('Exit', self)
@@ -44,7 +43,6 @@ class MainWindow(QMainWindow):
         quit_action.triggered.connect(self.close)
         file_menu.addAction(quit_action)
         
-        # Simulation menu
         sim_menu = menubar.addMenu('Simulation')
         
         reset_action = QAction('Reset', self)
@@ -52,7 +50,6 @@ class MainWindow(QMainWindow):
         reset_action.triggered.connect(self.reset_simulation)
         sim_menu.addAction(reset_action)
         
-        # View menu
         view_menu = menubar.addMenu('View')
         
         toggle_stats_action = QAction('Toggle Statistics Panel', self)
@@ -64,34 +61,27 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
-        # Main horizontal splitter
         main_splitter = QSplitter(Qt.Horizontal)
         
-        # Left side - simulation and controls
         left_widget = QWidget()
         left_layout = QVBoxLayout(left_widget)
         left_layout.setContentsMargins(5, 5, 5, 5)
         
-        # Simulation canvas
         self.canvas = SimulationCanvas()
         left_layout.addWidget(self.canvas, stretch=1)
         
-        # Control panel
         self.control_panel = ControlPanel()
         left_layout.addWidget(self.control_panel)
         
         main_splitter.addWidget(left_widget)
         
-        # Right side - statistics
         self.statistics_panel = StatisticsPanel()
         main_splitter.addWidget(self.statistics_panel)
         
-        # Set splitter proportions (66% left, 34% right for ~33% statistics panel)
         main_splitter.setSizes([900, 500])
-        main_splitter.setStretchFactor(0, 2)  # Left side gets stretch priority
-        main_splitter.setStretchFactor(1, 1)  # Right side also gets stretch but lower priority
+        main_splitter.setStretchFactor(0, 2)
+        main_splitter.setStretchFactor(1, 1)
         
-        # Main layout
         main_layout = QHBoxLayout(central_widget)
         main_layout.addWidget(main_splitter)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -103,7 +93,6 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage("Ready for simulation")
         
     def setup_connections(self):
-        # Control panel signals
         self.control_panel.start_simulation.connect(self.start_simulation)
         self.control_panel.pause_simulation.connect(self.pause_simulation)
         self.control_panel.reset_simulation.connect(self.reset_simulation)
@@ -145,23 +134,18 @@ class MainWindow(QMainWindow):
             return  # Don't process if simulation was paused
             
         try:
-            # Add new points to simulation
             result = self.simulator.add_points(self.points_per_batch)
             
-            # Update canvas with new points
             self.canvas.add_points(result.points)
             
-            # Update statistics panel
             self.statistics_panel.update_statistics(result, self.simulator)
             
-            # Update status bar
             accuracy = max(0, (1.0 - result.error / 3.14159) * 100)
             self.status_bar.showMessage(
                 f"Points: {result.total_points:,} | π ≈ {result.pi_estimate:.6f} | "
                 f"Accuracy: {accuracy:.2f}% | Running: {self.is_running}"
             )
             
-            # Ensure timer continues running
             if self.is_running and not self.simulation_timer.isActive():
                 print(f"Timer stopped unexpectedly at {result.total_points} points, restarting...")
                 self.simulation_timer.start(self.simulation_speed)
@@ -169,7 +153,6 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"Simulation error: {e}")
             self.status_bar.showMessage(f"Simulation error: {str(e)}")
-            # Don't pause simulation on error, just log it
             
     def toggle_statistics_panel(self):
         visible = self.statistics_panel.isVisible()
