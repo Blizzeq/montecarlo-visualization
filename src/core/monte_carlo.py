@@ -45,9 +45,8 @@ class MonteCarloSimulator:
         distances_squared = x_coords**2 + y_coords**2
         inside_mask = distances_squared <= 1.0
         
-        points = []
-        for i in range(count):
-            points.append(Point(x_coords[i], y_coords[i], inside_mask[i]))
+        # Use list comprehension for better performance than explicit loop
+        points = [Point(x_coords[i], y_coords[i], inside_mask[i]) for i in range(count)]
         
         return points
     
@@ -57,7 +56,8 @@ class MonteCarloSimulator:
         new_points = self.generate_batch_points(count)
         self.points.extend(new_points)
         
-        new_inside = sum(1 for p in new_points if p.inside_circle)
+        # More efficient counting using NumPy-style approach
+        new_inside = sum(p.inside_circle for p in new_points)
         self.points_inside += new_inside
         self.total_points += count
         

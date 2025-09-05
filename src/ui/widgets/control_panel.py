@@ -35,7 +35,7 @@ class ControlPanel(QWidget):
         layout.setSpacing(8)
         
         # Title
-        title_label = QLabel("Panel Kontrolny")
+        title_label = QLabel("Control Panel")
         title_font = QFont()
         title_font.setBold(True)
         title_font.setPointSize(12)
@@ -56,7 +56,7 @@ class ControlPanel(QWidget):
         self.update()
         
     def create_control_buttons(self, parent_layout):
-        group = QGroupBox("Kontrola Symulacji")
+        group = QGroupBox("Simulation Control")
         group.setStyleSheet("""
         QGroupBox {
             color: white; 
@@ -76,16 +76,16 @@ class ControlPanel(QWidget):
         
         self.start_btn = QPushButton("▶ Start")
         self.start_btn.setStyleSheet(Styles.BUTTON_STYLE)
-        self.start_btn.setToolTip("Rozpocznij symulację Monte Carlo")
+        self.start_btn.setToolTip("Start Monte Carlo simulation")
         
-        self.pause_btn = QPushButton("⏸ Pauza")
+        self.pause_btn = QPushButton("⏸ Pause")
         self.pause_btn.setStyleSheet(Styles.BUTTON_STYLE)
         self.pause_btn.setEnabled(False)
-        self.pause_btn.setToolTip("Wstrzymaj symulację")
+        self.pause_btn.setToolTip("Pause simulation")
         
         self.reset_btn = QPushButton("⟲ Reset")
         self.reset_btn.setStyleSheet(Styles.BUTTON_STYLE)
-        self.reset_btn.setToolTip("Zresetuj symulację")
+        self.reset_btn.setToolTip("Reset simulation")
         
         layout.addWidget(self.start_btn)
         layout.addWidget(self.pause_btn)
@@ -94,7 +94,7 @@ class ControlPanel(QWidget):
         parent_layout.addWidget(group)
         
     def create_speed_controls(self, parent_layout):
-        group = QGroupBox("Prędkość Symulacji")
+        group = QGroupBox("Simulation Speed")
         group.setStyleSheet("""
         QGroupBox {
             color: white; 
@@ -119,15 +119,15 @@ class ControlPanel(QWidget):
         self.speed_slider.setRange(10, 1000)  # 10ms to 1000ms
         self.speed_slider.setValue(100)
         self.speed_slider.setStyleSheet(Styles.SLIDER_STYLE)
-        self.speed_slider.setToolTip("Opóźnienie między iteracjami (ms)")
+        self.speed_slider.setToolTip("Delay between iterations (ms)")
         
         self.speed_label = QLabel("100 ms")
         self.speed_label.setStyleSheet(Styles.LABEL_STYLE)
         self.speed_label.setMinimumWidth(60)
         
-        fast_label = QLabel("Szybko")
+        fast_label = QLabel("Fast")
         fast_label.setStyleSheet(Styles.LABEL_STYLE)
-        slow_label = QLabel("Wolno") 
+        slow_label = QLabel("Slow") 
         slow_label.setStyleSheet(Styles.LABEL_STYLE)
         
         speed_layout.addWidget(fast_label)

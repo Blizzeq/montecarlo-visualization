@@ -152,16 +152,39 @@ class SimulationCanvas(QWidget):
                            center_x + radius, center_y + offset)
                            
     def draw_points(self, painter: QPainter, transform_func):
-        # Draw regular points (older points) - always draw these first
+        # Draw regular points (older points) using batch drawing for performance
         displayed_points = self.all_points[-self.max_displayed_points:] if len(self.all_points) > self.max_displayed_points else self.all_points
         animated_point_set = {id(ap.point) for ap in self.animated_points}
         
-        # Draw all static points
+        # Separate points by type for batch drawing
+        inside_points = []
+        outside_points = []
+        
         for point in displayed_points:
             if id(point) not in animated_point_set:
-                self.draw_single_point(painter, point, transform_func, 255, 1.0)
+                canvas_x, canvas_y = transform_func(point.x, point.y)
+                if point.inside_circle:
+                    inside_points.append((canvas_x, canvas_y))
+                else:
+                    outside_points.append((canvas_x, canvas_y))
+        
+        # Batch draw inside points (green)
+        if inside_points:
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(Colors.POINT_INSIDE))
+            for x, y in inside_points:
+                painter.drawEllipse(x - self.point_size/2, y - self.point_size/2, 
+                                  self.point_size, self.point_size)
+        
+        # Batch draw outside points (red)
+        if outside_points:
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(QBrush(Colors.POINT_OUTSIDE))
+            for x, y in outside_points:
+                painter.drawEllipse(x - self.point_size/2, y - self.point_size/2,
+                                  self.point_size, self.point_size)
                 
-        # Draw animated points on top
+        # Draw animated points on top (keep individual drawing for animations)
         for animated_point in self.animated_points:
             self.draw_single_point(
                 painter, 
@@ -170,10 +193,6 @@ class SimulationCanvas(QWidget):
                 animated_point.alpha,
                 animated_point.scale
             )
-            
-        # Debug: show total point count
-        painter.setPen(QPen(Colors.TEXT_PRIMARY))
-        painter.drawText(10, self.height() - 10, f"Punkty: {len(self.all_points)}")
             
     def draw_single_point(self, painter: QPainter, point: Point, 
                          transform_func, alpha: int, scale: float):
@@ -217,7 +236,7 @@ class SimulationCanvas(QWidget):
         title_font.setPointSize(14)
         title_font.setBold(True)
         painter.setFont(title_font)
-        painter.drawText(panel_x + 15, panel_y + 25, "Algorytm Monte Carlo dla π")
+        painter.drawText(panel_x + 15, panel_y + 25, "Monte Carlo Algorithm for π")
         
         # Algorithm explanation
         painter.setPen(QPen(Colors.TEXT_PRIMARY))
@@ -226,9 +245,9 @@ class SimulationCanvas(QWidget):
         info_font.setBold(False)
         painter.setFont(info_font)
         
-        painter.drawText(panel_x + 15, panel_y + 45, "• Losowe punkty w kwadracie [-1,1] × [-1,1]")
-        painter.drawText(panel_x + 15, panel_y + 60, f"• Sprawdzenie: x² + y² ≤ 1 (czy w kole)")
-        painter.drawText(panel_x + 15, panel_y + 75, "• π ≈ 4 × (punkty w kole / wszystkie punkty)")
+        painter.drawText(panel_x + 15, panel_y + 45, "• Random points in square [-1,1] × [-1,1]")
+        painter.drawText(panel_x + 15, panel_y + 60, f"• Check: x² + y² ≤ 1 (inside circle)")
+        painter.drawText(panel_x + 15, panel_y + 75, "• π ≈ 4 × (points inside / all points)")
         
         # Legend with points
         legend_y = panel_y + 95
@@ -240,7 +259,7 @@ class SimulationCanvas(QWidget):
         
         painter.setPen(QPen(Colors.SUCCESS))
         painter.setFont(info_font)
-        painter.drawText(panel_x + 35, legend_y + 5, "W kole")
+        painter.drawText(panel_x + 35, legend_y + 5, "Inside")
         
         # Outside circle  
         painter.setBrush(QBrush(Colors.POINT_OUTSIDE))
@@ -248,7 +267,7 @@ class SimulationCanvas(QWidget):
         painter.drawEllipse(panel_x + 100, legend_y - 5, 10, 10)
         
         painter.setPen(QPen(Colors.ERROR))
-        painter.drawText(panel_x + 120, legend_y + 5, "Poza kołem")
+        painter.drawText(panel_x + 120, legend_y + 5, "Outside")
         
         # Count display
         if self.all_points:
@@ -261,7 +280,7 @@ class SimulationCanvas(QWidget):
             count_font.setBold(True)
             painter.setFont(count_font)
             painter.drawText(panel_x + 200, legend_y + 5, 
-                           f"W: {inside_count} | Poza: {outside_count}")
+                           f"In: {inside_count} | Out: {outside_count}")
         
     def mousePressEvent(self, event):
         # Toggle grid on right click

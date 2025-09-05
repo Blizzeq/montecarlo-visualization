@@ -27,7 +27,7 @@ class StatisticsPanel(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
         
         # Title
-        title_label = QLabel("Statystyki i Analizy")
+        title_label = QLabel("Statistics and Analysis")
         title_font = QFont()
         title_font.setBold(True)
         title_font.setPointSize(12)
@@ -74,9 +74,9 @@ class StatisticsPanel(QWidget):
         # Set up the plot with proper margins for labels
         self.convergence_plot.getPlotItem().setContentsMargins(10, 10, 10, 15)  # left, top, right, bottom
         
-        self.convergence_plot.setLabel('left', 'Estymowana wartość π', color='white', size='11pt')
-        self.convergence_plot.setLabel('bottom', 'Numer iteracji', color='white', size='11pt')
-        self.convergence_plot.setTitle('Zbieżność do prawdziwej wartości π', color='#00D4FF', size='13pt')
+        self.convergence_plot.setLabel('left', 'Estimated π value', color='white', size='11pt')
+        self.convergence_plot.setLabel('bottom', 'Iteration number', color='white', size='11pt')
+        self.convergence_plot.setTitle('Convergence to true π value', color='#00D4FF', size='13pt')
         self.convergence_plot.showGrid(x=True, y=True, alpha=0.4)
         
         # Set initial axis ranges
@@ -92,8 +92,8 @@ class StatisticsPanel(QWidget):
         bottom_axis.setPen('white')
         
         # Force label update
-        left_axis.setLabel('Estymowana wartość π', color='white', size='12pt')
-        bottom_axis.setLabel('Numer iteracji', color='white', size='12pt')
+        left_axis.setLabel('Estimated π value', color='white', size='11pt')
+        bottom_axis.setLabel('Iteration number', color='white', size='11pt')
         
         # Add reference line for π
         self.pi_line = pg.InfiniteLine(pos=np.pi, angle=0, pen=pg.mkPen('yellow', width=2, style=Qt.DashLine))
@@ -114,9 +114,9 @@ class StatisticsPanel(QWidget):
         # Set up the plot with proper margins for labels
         self.error_plot.getPlotItem().setContentsMargins(10, 10, 10, 15)  # left, top, right, bottom
         
-        self.error_plot.setLabel('left', 'Błąd bezwzględny', color='white', size='11pt')
-        self.error_plot.setLabel('bottom', 'Numer iteracji', color='white', size='11pt')
-        self.error_plot.setTitle('Błąd estymacji π', color='#00D4FF', size='13pt')
+        self.error_plot.setLabel('left', 'Absolute error', color='white', size='11pt')
+        self.error_plot.setLabel('bottom', 'Iteration number', color='white', size='11pt')
+        self.error_plot.setTitle('π estimation error', color='#00D4FF', size='13pt')
         self.error_plot.showGrid(x=True, y=True, alpha=0.4)
         
         # Start with linear scale from 0, not logarithmic
@@ -133,21 +133,21 @@ class StatisticsPanel(QWidget):
         error_bottom_axis.setPen('white')
         
         # Force label update
-        error_left_axis.setLabel('Błąd bezwzględny', color='white', size='12pt')
-        error_bottom_axis.setLabel('Numer iteracji', color='white', size='12pt')
+        error_left_axis.setLabel('Absolute error', color='white', size='11pt')
+        error_bottom_axis.setLabel('Iteration number', color='white', size='11pt')
         
         self.error_curve = self.error_plot.plot(pen=pg.mkPen('#FF7043', width=2))
         
         layout.addWidget(self.error_plot)
         
-        self.tab_widget.addTab(tab, "Zbieżność")
+        self.tab_widget.addTab(tab, "Convergence")
         
     def create_statistics_tab(self):
         tab = QWidget()
         layout = QVBoxLayout(tab)
         
         # Current statistics - colorful cards layout
-        current_title = QLabel("📊 Aktualne Statystyki")
+        current_title = QLabel("📊 Current Statistics")
         current_title.setStyleSheet(f"color: {Colors.TEXT_HIGHLIGHT.name()}; font-size: 16px; font-weight: bold; margin: 10px 0;")
         layout.addWidget(current_title)
         
@@ -159,12 +159,12 @@ class StatisticsPanel(QWidget):
         
         # Stats cards data: (key, icon, title, default_value, color)
         stats_cards = [
-            ("current_pi", "π", "Aktualne π", "0.000000", Colors.ACCENT_CYAN),
-            ("total_points", "📍", "Wszystkie punkty", "0", Colors.SUCCESS),
-            ("points_inside", "✅", "Punkty w kole", "0", Colors.SUCCESS),
-            ("points_outside", "❌", "Punkty poza kołem", "0", Colors.ERROR),
-            ("current_error", "⚠", "Błąd bezwzględny", "0.000000", Colors.WARNING),
-            ("relative_error", "%", "Błąd względny", "0.00%", Colors.ACCENT_ORANGE)
+            ("current_pi", "π", "Current π", "0.000000", Colors.ACCENT_CYAN),
+            ("total_points", "📍", "Total points", "0", Colors.SUCCESS),
+            ("points_inside", "✅", "Points inside", "0", Colors.SUCCESS),
+            ("points_outside", "❌", "Points outside", "0", Colors.ERROR),
+            ("current_error", "⚠", "Absolute error", "0.000000", Colors.WARNING),
+            ("relative_error", "%", "Relative error", "0.00%", Colors.ACCENT_ORANGE)
         ]
         
         # Create cards in pairs (2 per row)
@@ -218,7 +218,7 @@ class StatisticsPanel(QWidget):
         layout.addLayout(cards_layout)
         
         # Historical statistics section
-        historical_title = QLabel("📈 Statystyki Historyczne")
+        historical_title = QLabel("📈 Historical Statistics")
         historical_title.setStyleSheet(f"color: {Colors.TEXT_HIGHLIGHT.name()}; font-size: 16px; font-weight: bold; margin: 15px 0 5px 0;")
         layout.addWidget(historical_title)
         
@@ -253,7 +253,7 @@ class StatisticsPanel(QWidget):
         historical_layout.addWidget(self.historical_stats_text)
         layout.addWidget(historical_card, 1)  # Give it stretch factor of 1 to expand
         
-        self.tab_widget.addTab(tab, "Statystyki")
+        self.tab_widget.addTab(tab, "Statistics")
         
     def create_distribution_tab(self):
         tab = QWidget()
@@ -265,9 +265,9 @@ class StatisticsPanel(QWidget):
         # Set up the plot with proper margins for labels
         self.distribution_plot.getPlotItem().setContentsMargins(10, 10, 10, 15)  # left, top, right, bottom
         
-        self.distribution_plot.setLabel('left', 'Liczba punktów', color='white', size='12pt')
-        self.distribution_plot.setLabel('bottom', 'Odległość od środka koła', color='white', size='12pt')
-        self.distribution_plot.setTitle('Histogram odległości punktów od centrum', color='#00D4FF', size='14pt')
+        self.distribution_plot.setLabel('left', 'Number of points', color='white', size='12pt')
+        self.distribution_plot.setLabel('bottom', 'Distance from circle center', color='white', size='12pt')
+        self.distribution_plot.setTitle('Points distance histogram from center', color='#00D4FF', size='14pt')
         self.distribution_plot.showGrid(x=True, y=True, alpha=0.4)
         
         # Set initial axis ranges
@@ -283,21 +283,21 @@ class StatisticsPanel(QWidget):
         dist_bottom_axis.setPen('white')
         
         # Force label update
-        dist_left_axis.setLabel('Liczba punktów', color='white', size='12pt')
-        dist_bottom_axis.setLabel('Odległość od środka koła', color='white', size='12pt')
+        dist_left_axis.setLabel('Number of points', color='white', size='12pt')
+        dist_bottom_axis.setLabel('Distance from circle center', color='white', size='12pt')
         
         layout.addWidget(self.distribution_plot)
         
         # Efficiency metrics
-        efficiency_group = QGroupBox("Metryki Wydajności")
+        efficiency_group = QGroupBox("Performance Metrics")
         efficiency_group.setStyleSheet("QGroupBox { color: white; font-weight: bold; }")
         efficiency_layout = QVBoxLayout(efficiency_group)
         
         self.efficiency_labels = {}
         efficiency_info = [
-            ("points_per_second", "Punkty na sekundę:", "0"),
-            ("avg_batch_time", "Śr. czas partii:", "0.000 ms"),
-            ("memory_usage", "Użycie pamięci:", "~0 MB")
+            ("points_per_second", "Points per second:", "0"),
+            ("avg_batch_time", "Avg. batch time:", "0.000 ms"),
+            ("memory_usage", "Memory usage:", "~0 MB")
         ]
         
         for key, label_text, default_value in efficiency_info:
@@ -319,7 +319,7 @@ class StatisticsPanel(QWidget):
             
         layout.addWidget(efficiency_group)
         
-        self.tab_widget.addTab(tab, "Rozkład")
+        self.tab_widget.addTab(tab, "Distribution")
         
     def update_statistics(self, result: SimulationResult, simulator: MonteCarloSimulator):
         # Update convergence plots
@@ -398,27 +398,27 @@ class StatisticsPanel(QWidget):
         self.update_historical_text(stats, result)
         
     def update_historical_text(self, stats: dict, result: SimulationResult):
-        historical_text = f"""📊 STATYSTYKI SYMULACJI
+        historical_text = f"""📊 SIMULATION STATISTICS
 
-🎯 Estymacja π:
-   • Średnia: {stats['mean_estimate']:.6f}
-   • Odchylenie std: {stats['std_estimate']:.6f}
-   • Aktualna: {result.pi_estimate:.6f}
+🎯 π Estimation:
+   • Average: {stats['mean_estimate']:.6f}
+   • Std deviation: {stats['std_estimate']:.6f}
+   • Current: {result.pi_estimate:.6f}
 
-⚠️  Analiza błędu:
-   • Minimalny: {stats['min_error']:.6f}
-   • Maksymalny: {stats['max_error']:.6f}
-   • Średni: {stats['mean_error']:.6f}
-   • Aktualny: {result.error:.6f}
+⚠️  Error Analysis:
+   • Minimum: {stats['min_error']:.6f}
+   • Maximum: {stats['max_error']:.6f}
+   • Average: {stats['mean_error']:.6f}
+   • Current: {result.error:.6f}
 
-📐 Porównanie z π:
-   • Teoretyczne π: {np.pi:.6f}
-   • Różnica: {abs(result.pi_estimate - np.pi):.6f}
-   • Dokładność: {(1 - result.error / np.pi) * 100:.2f}%
+📐 Comparison with π:
+   • Theoretical π: {np.pi:.6f}
+   • Difference: {abs(result.pi_estimate - np.pi):.6f}
+   • Accuracy: {(1 - result.error / np.pi) * 100:.2f}%
 
-⏱️  Wydajność:
-   • Czas obliczeń: {stats['total_computation_time']:.3f}s
-   • Punkty: {result.total_points:,}
+⏱️  Performance:
+   • Computation time: {stats['total_computation_time']:.3f}s
+   • Points: {result.total_points:,}
         """.strip()
         
         self.historical_stats_text.setPlainText(historical_text)
@@ -470,7 +470,7 @@ class StatisticsPanel(QWidget):
                 
                 # Add text label for circle radius - positioned at top of chart
                 max_height = max(hist) if len(hist) > 0 and max(hist) > 0 else 100
-                radius_text = pg.TextItem('← Promień koła (r=1)', color='#FFD700', anchor=(0, 1))
+                radius_text = pg.TextItem('← Circle radius (r=1)', color='#FFD700', anchor=(0, 1))
                 radius_text.setPos(1.02, max_height * 0.9)  # Position near top
                 self.distribution_plot.addItem(radius_text)
                 

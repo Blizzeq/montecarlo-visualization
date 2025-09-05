@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Monte Carlo π Visualization
-Interaktywna wizualizacja algorytmu Monte Carlo do wyznaczania wartości π
+Interactive visualization of Monte Carlo algorithm for π estimation
 
-Autor: Assistant
-Wymaga: PySide6, numpy, matplotlib, pyqtgraph
+Author: Jakub Krasuski  
+Requirements: PySide6, numpy, matplotlib, pyqtgraph
 """
 
 import sys
@@ -21,22 +21,22 @@ try:
     from src.ui.main_window import MainWindow
     from src.utils.colors import Colors
 except ImportError as e:
-    print(f"Błąd importu: {e}")
-    print("Upewnij się, że zainstalowane są wszystkie wymagane biblioteki:")
+    print(f"Import error: {e}")
+    print("Make sure all required libraries are installed:")
     print("pip install PySide6 numpy matplotlib pyqtgraph")
     sys.exit(1)
 
 
 def setup_application():
-    """Konfiguruje aplikację Qt"""
+    """Configure Qt application"""
     app = QApplication(sys.argv)
     
-    # Ustawienia aplikacji
+    # Application settings
     app.setApplicationName("Monte Carlo π Visualization")
     app.setApplicationVersion("1.0")
     app.setOrganizationName("Monte Carlo Lab")
     
-    # Ustaw globalny styl dark theme
+    # Set global dark theme style
     app.setStyleSheet(f"""
     QApplication {{
         background-color: {Colors.BACKGROUND.name()};
@@ -62,35 +62,35 @@ def setup_application():
 
 
 def main():
-    """Główna funkcja aplikacji"""
+    """Main application function"""
     try:
-        # Utwórz aplikację Qt
+        # Create Qt application
         app = setup_application()
         
-        # Utwórz i pokaż główne okno
+        # Create and show main window
         window = MainWindow()
         window.show()
         
-        # Pokaż informacje o aplikacji
+        # Show application info
         print("=" * 50)
         print("Monte Carlo π Visualization")
         print("=" * 50)
-        print("Algorytm Monte Carlo do wyznaczania wartości π")
-        print("Użyj panelu kontrolnego do sterowania symulacją")
-        print("PPM na canvas aby przełączyć siatkę")
-        print("Sprawdź zakładki statystyk aby zobaczyć analizy")
+        print("Monte Carlo algorithm for π estimation")
+        print("Use control panel to manage simulation")
+        print("Right-click on canvas to toggle grid")
+        print("Check statistics tabs for detailed analysis")
         print("=" * 50)
         
-        # Uruchom pętlę aplikacji
+        # Run application loop
         return app.exec()
         
     except Exception as e:
-        print(f"Błąd krytyczny aplikacji: {e}")
+        print(f"Critical application error: {e}")
         if 'app' in locals():
             QMessageBox.critical(
                 None, 
-                "Błąd Krytyczny", 
-                f"Wystąpił nieoczekiwany błąd:\n\n{str(e)}\n\nAplikacja zostanie zamknięta."
+                "Critical Error", 
+                f"An unexpected error occurred:\n\n{str(e)}\n\nApplication will be closed."
             )
         return 1
 

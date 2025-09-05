@@ -37,21 +37,15 @@ class MainWindow(QMainWindow):
         menubar.setStyleSheet("QMenuBar { color: white; background-color: #2e2e32; }")
         
         # File menu
-        file_menu = menubar.addMenu('Plik')
+        file_menu = menubar.addMenu('File')
         
-        export_action = QAction('Eksportuj wyniki...', self)
-        export_action.triggered.connect(self.export_results)
-        file_menu.addAction(export_action)
-        
-        file_menu.addSeparator()
-        
-        quit_action = QAction('Wyjście', self)
+        quit_action = QAction('Exit', self)
         quit_action.setShortcut('Ctrl+Q')
         quit_action.triggered.connect(self.close)
         file_menu.addAction(quit_action)
         
         # Simulation menu
-        sim_menu = menubar.addMenu('Symulacja')
+        sim_menu = menubar.addMenu('Simulation')
         
         reset_action = QAction('Reset', self)
         reset_action.setShortcut('Ctrl+R')
@@ -59,9 +53,9 @@ class MainWindow(QMainWindow):
         sim_menu.addAction(reset_action)
         
         # View menu
-        view_menu = menubar.addMenu('Widok')
+        view_menu = menubar.addMenu('View')
         
-        toggle_stats_action = QAction('Pokaż/Ukryj statystyki', self)
+        toggle_stats_action = QAction('Toggle Statistics Panel', self)
         toggle_stats_action.setShortcut('Ctrl+T')
         toggle_stats_action.triggered.connect(self.toggle_statistics_panel)
         view_menu.addAction(toggle_stats_action)
@@ -106,7 +100,7 @@ class MainWindow(QMainWindow):
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_bar.setStyleSheet("color: white; background-color: #2e2e32;")
-        self.status_bar.showMessage("Gotowy do symulacji")
+        self.status_bar.showMessage("Ready for simulation")
         
     def setup_connections(self):
         # Control panel signals
@@ -123,14 +117,14 @@ class MainWindow(QMainWindow):
             self.is_running = True
             self.simulation_timer.start(self.simulation_speed)
             self.control_panel.set_running_state(True)
-            self.status_bar.showMessage("Symulacja w toku...")
+            self.status_bar.showMessage("Simulation in progress...")
             
     def pause_simulation(self):
         if self.is_running:
             self.is_running = False
             self.simulation_timer.stop()
             self.control_panel.set_running_state(False)
-            self.status_bar.showMessage("Symulacja wstrzymana")
+            self.status_bar.showMessage("Simulation paused")
             
     def reset_simulation(self):
         self.pause_simulation()
@@ -138,7 +132,7 @@ class MainWindow(QMainWindow):
         self.canvas.clear()
         self.statistics_panel.clear()
         self.control_panel.reset_display()
-        self.status_bar.showMessage("Symulacja zresetowana")
+        self.status_bar.showMessage("Simulation reset")
         
     def set_simulation_speed(self, speed_ms: int):
         self.simulation_speed = speed_ms
@@ -163,8 +157,8 @@ class MainWindow(QMainWindow):
             # Update status bar
             accuracy = max(0, (1.0 - result.error / 3.14159) * 100)
             self.status_bar.showMessage(
-                f"Punkty: {result.total_points:,} | π ≈ {result.pi_estimate:.6f} | "
-                f"Dokładność: {accuracy:.2f}% | Uruchomione: {self.is_running}"
+                f"Points: {result.total_points:,} | π ≈ {result.pi_estimate:.6f} | "
+                f"Accuracy: {accuracy:.2f}% | Running: {self.is_running}"
             )
             
             # Ensure timer continues running
@@ -174,16 +168,13 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Simulation error: {e}")
-            self.status_bar.showMessage(f"Błąd symulacji: {str(e)}")
+            self.status_bar.showMessage(f"Simulation error: {str(e)}")
             # Don't pause simulation on error, just log it
             
     def toggle_statistics_panel(self):
         visible = self.statistics_panel.isVisible()
         self.statistics_panel.setVisible(not visible)
         
-    def export_results(self):
-        # TODO: Implement export functionality
-        self.status_bar.showMessage("Eksport zostanie zaimplementowany wkrótce...")
         
     def closeEvent(self, event):
         self.pause_simulation()
